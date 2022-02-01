@@ -1,0 +1,76 @@
+﻿
+a, .btn-link {
+    color: #667591;
+}
+.rz-dropdown {
+    border-radius: 0;
+    border: none;
+    font-size: 1.25rem;
+    outline: none !important;
+    box-shadow: none !important;
+    border-bottom: 1.5px solid var(--blue-primary);
+    margin: 0.5rem;
+}
+
+    .rz-dropdown:hover {
+        border-radius: 0;
+        border: none;
+        font-size: 16px;
+        outline: none !important;
+        box-shadow: none !important;
+        border-bottom: 1.5px solid var(--blue-primary) !important;
+    }
+
+    .rz-dropdown:focus {
+        border-radius: 0;
+        border: none !important;
+        font-size: 16px;
+        outline: none;
+        box-shadow: none !important;
+        border-bottom: 1.5px solid var(--blue-primary) !important;
+    }
+
+.rz-button.btn-secondary {
+    background-color: #6c8593;
+    color: #ffffff;
+    margin-top: 1rem;
+}
+
+
+    .rz-calendar .rz-inputtext {
+        border: none;
+        border-bottom: 1.5px solid var(--blue-primary) !important;
+        border-radius: 0px;
+        box-shadow: none !important;
+        outline: none !important;
+        font-size: 1.25rem;
+    }
+
+.rz-tabview-nav li a {
+    font-size: 1.5rem;
+}
+
+.rz-button-md {
+    font-size: 1.25rem;
+    font-weight: normal;
+    padding: 0 2rem;
+    height: 2.1875rem;
+}
+
+.search-center-wrapper {
+    background-color: #e6ecef;
+}
+
+.search-center-page-footer {
+    margin-top: 1rem;
+    background-color: #485860;
+}
+.extra-info {
+    color: #2f4f4fa6;
+}
+.search-header h1 {
+    color: #667591;
+}
+.search-header h2 {
+    color: #404e66;
+}

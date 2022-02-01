@@ -1,10 +1,50 @@
 ﻿@page "/"
 @page "/findvaccinecenters"
+@using TrackerPortal.Model
 
-<h3>Find Vaccine Centers</h3>
+<div class="d-flex flex-column justify-content-around search-center-wrapper" style="height:70vh">
+    <div class="align-self-center text-center search-header">
+        <h1>Find vaccine centers</h1>
+        <h2>Get a preview of Covid-19 vaccine centers and check availability</h2>
+    </div>
+    <div class="align-self-center" style="width:auto">
+        <RadzenTabs>
+            <Tabs>
+                <RadzenTabsItem Text="By District">
 
-<h5>This page is currently in progress</h5>
+                    <div class="dropdown-wrapper">
+                        <div class="flex">
+                            <RadzenDropDown Placeholder="Select State" AllowFiltering="true" Data="StatesList" TValue="StatesModel" @bind-Value="SelectedState" />
+                        </div>
+                        <div>
+                            <RadzenDropDown Placeholder="Select District" AllowFiltering="true" Data="DistrictsList" TValue="DistrictsModel" @bind-Value="SelectedDistrict" />
+                        </div>
+                    </div>
+                    <RadzenDatePicker Placeholder="Choose Appointment Date" TValue="DateTime" @bind-Value="SelectedDate" Style="width:100%" DateFormat="dd-MM-yyyy" />
+                    <RadzenButton ButtonStyle="ButtonStyle.Secondary" Text="Search" Style="width:100%"></RadzenButton>
+                </RadzenTabsItem>
+                <RadzenTabsItem Text="By Pin">
+                    <h4>This module is not developed yet.</h4>
+                </RadzenTabsItem>
+            </Tabs>
+        </RadzenTabs>
+    </div>
+</div>
+<div class="mt-4" style="font-size:1rem">
+    <b style="color:red">Note:</b>
+    <div class="extra-info">The details displayed here are provided the CoWIN</div>
+    <div class="extra-info">We do not modify or change any data</div>
+</div>
 
-@code {
+@code{
+    public List<StatesModel> StatesList { get; set; }
 
+    public List<DistrictsModel> DistrictsList { get; set; }
+
+    public StatesModel SelectedState { get; set; }
+
+    public DistrictsModel SelectedDistrict { get; set; }
+
+    public DateTime SelectedDate { get; set; }
 }
+
