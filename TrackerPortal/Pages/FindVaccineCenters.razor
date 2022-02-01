@@ -1,6 +1,7 @@
 ﻿@page "/"
 @page "/findvaccinecenters"
 @using TrackerPortal.Model
+@using TrackerPortal.Helper
 
 <div class="d-flex flex-column justify-content-around search-center-wrapper" style="height:70vh">
     <div class="align-self-center text-center search-header">
@@ -14,10 +15,10 @@
 
                     <div class="dropdown-wrapper">
                         <div class="flex">
-                            <RadzenDropDown Placeholder="Select State" AllowFiltering="true" Data="StatesList" TValue="StatesModel" @bind-Value="SelectedState" />
+                            <RadzenDropDown Placeholder="Select State" AllowFiltering="true" Data=@StatesList TextProperty="StateName" ValueProperty="StateID" @bind-Value="SelectedState.StateID" Change="()=>PopulateDistricts(SelectedState)"/>
                         </div>
                         <div>
-                            <RadzenDropDown Placeholder="Select District" AllowFiltering="true" Data="DistrictsList" TValue="DistrictsModel" @bind-Value="SelectedDistrict" />
+                            <RadzenDropDown Placeholder="Select District" AllowFiltering="true" Data=@DistrictsList TextProperty="DistrictName" ValueProperty="DistrictID" @bind-Value="SelectedDistrict.DistrictID" />
                         </div>
                     </div>
                     <RadzenDatePicker Placeholder="Choose Appointment Date" TValue="DateTime" @bind-Value="SelectedDate" Style="width:100%" DateFormat="dd-MM-yyyy" />
@@ -36,15 +37,25 @@
     <div class="extra-info">We do not modify or change any data</div>
 </div>
 
+
 @code{
-    public List<StatesModel> StatesList { get; set; }
+    public List<States> StatesList { get; set; } = new List<States>();
 
-    public List<DistrictsModel> DistrictsList { get; set; }
+    public List<Districts> DistrictsList { get; set; } = new List<Districts>();
 
-    public StatesModel SelectedState { get; set; }
+    public States SelectedState { get; set; } = new States();
 
-    public DistrictsModel SelectedDistrict { get; set; }
+    public Districts SelectedDistrict { get; set; } = new Districts();
 
     public DateTime SelectedDate { get; set; }
+
+    protected override async Task OnInitializedAsync()
+    {
+        StatesList = await RestHelper.PopulateStates();
+    }
+    public async Task PopulateDistricts(States selectedState)
+    {
+        //call api for populating districts based on state id
+    }
 }
 
