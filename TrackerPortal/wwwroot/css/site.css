@@ -3,7 +3,9 @@
 html, body {
     font-family: 'Arial, Helvetica Neue', Helvetica, sans-serif;
 }
-
+*::-webkit-scrollbar {
+    width: 12px;
+}
 a, .btn-link {
     color: #667591;
 }
@@ -52,13 +54,20 @@ a, .btn-link {
     .rz-dropdown {
         width: 100%;
     }
+    .search-body {
+        width: auto;
+    }
 }
 @media (min-width: 768px) {
-    .dropdown-wrapper{
-        display:flex;
-        flex-direction:row;
-        justify-content:space-between;
+    .dropdown-wrapper {
+        display: flex;
+        flex-direction: row;
+        justify-content: space-between;
     }
+    .search-body {
+        width:fit-content;
+    }
+
 }
 :root {
     --blue-primary: #133b63;
