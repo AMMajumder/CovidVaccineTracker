@@ -31,6 +31,29 @@
         </RadzenTabs>
     </div>
 </div>
+<div>
+    @foreach (var center in CentersList)
+    {
+        <h6>@center.CenterID</h6>
+        <h6>@center.CenterName</h6>
+        <h6>@center.Address</h6>
+        <h6>@center.BlockName</h6>
+        <h6>@center.PinCode</h6>
+        <h6>@center.AvailableCapacity</h6>
+        <h6>@center.AvailableCapacityDose1</h6>
+        <h6>@center.AvailableCapacityDose2</h6>
+        <h6>@center.FeeType</h6>
+        <h6>@center.Fee</h6>
+        <h6>@center.MinAgeLimit</h6>
+        <h6>@center.MaxAgeLimit</h6>
+        <h4>Slots:</h4>
+        foreach (var slot in center.Slots)
+        {
+            <h6>@slot</h6>
+        }
+        <hr />
+    }
+</div>
 <div class="mt-4" style="font-size:1rem">
     <b style="color:red">Note:</b>
     <div class="extra-info">The details displayed here are provided the CoWIN</div>
@@ -42,6 +65,8 @@
     public List<States> StatesList { get; set; } = new List<States>();
 
     public List<Districts> DistrictsList { get; set; } = new List<Districts>();
+
+    public List<Centers> CentersList { get; set; } = new List<Centers>();
 
     public States SelectedState { get; set; } = new States();
 
@@ -59,7 +84,7 @@
     }
     public async Task FetchCenters()
     {
-
+        CentersList = await RestHelper.PopulateCenters(SelectedDistrict.DistrictID, SelectedDate);
     }
 }
 
