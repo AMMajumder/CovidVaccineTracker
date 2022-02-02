@@ -12,6 +12,7 @@ namespace TrackerPortal.Helper
     {
         private const string urlBase = "https://cdn-api.co-vin.in/api";
         private const string FetchStatesURL = "/v2/admin/location/states";
+        private const string FetchDistrictsURL = "/v2/admin/location/districts/";
 
         public static async Task<List<States>> PopulateStates()
         {
@@ -46,6 +47,39 @@ namespace TrackerPortal.Helper
             }
             return statesList.AllStates;
         }
-        
+        public static async Task<List<Districts>> PopulateDistricts(int stateID)
+        {
+            HttpClient httpClient = null;
+            var districtsList = new DistrictsModel();
+            string contentString = null;
+
+            try
+            {
+
+                var requestURL = $"{urlBase}{FetchDistrictsURL}{stateID}";
+
+                using (httpClient = new HttpClient())
+                {
+                    HttpResponseMessage result = new HttpResponseMessage();
+
+                    result = await httpClient.GetAsync(requestURL);
+
+                    contentString = await result.Content.ReadAsStringAsync();
+
+                    districtsList = JsonConvert.DeserializeObject<DistrictsModel>(contentString);
+
+                }
+            }
+            catch (Exception ex)
+            {
+                districtsList = new DistrictsModel();
+            }
+            finally
+            {
+                if (httpClient != null) httpClient = null;
+            }
+            return districtsList.AllDistricts;
+        }
+
     }
 }
