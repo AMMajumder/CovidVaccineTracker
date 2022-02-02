@@ -15,14 +15,14 @@
 
                     <div class="dropdown-wrapper">
                         <div class="flex">
-                            <RadzenDropDown Placeholder="Select State" AllowFiltering="true" Data=@StatesList TextProperty="StateName" ValueProperty="StateID" @bind-Value="SelectedState.StateID" Change="()=>PopulateDistricts(SelectedState)"/>
+                            <RadzenDropDown Placeholder="Select State" AllowFiltering="true" Data=@StatesList TextProperty="StateName" ValueProperty="StateID" @bind-Value="SelectedState.StateID" Change="PopulateDistricts" />
                         </div>
                         <div>
                             <RadzenDropDown Placeholder="Select District" AllowFiltering="true" Data=@DistrictsList TextProperty="DistrictName" ValueProperty="DistrictID" @bind-Value="SelectedDistrict.DistrictID" />
                         </div>
                     </div>
                     <RadzenDatePicker Placeholder="Choose Appointment Date" TValue="DateTime" @bind-Value="SelectedDate" Style="width:100%" DateFormat="dd-MM-yyyy" />
-                    <RadzenButton ButtonStyle="ButtonStyle.Secondary" Text="Search" Style="width:100%"></RadzenButton>
+                    <RadzenButton ButtonStyle="ButtonStyle.Secondary" Text="Search" Style="width:100%" Click="FetchCenters"></RadzenButton>
                 </RadzenTabsItem>
                 <RadzenTabsItem Text="By Pin">
                     <h4>This module is not developed yet.</h4>
@@ -53,9 +53,13 @@
     {
         StatesList = await RestHelper.PopulateStates();
     }
-    public async Task PopulateDistricts(States selectedState)
+    public async Task PopulateDistricts()
     {
-        //call api for populating districts based on state id
+
+    }
+    public async Task FetchCenters()
+    {
+
     }
 }
 
