@@ -72,3 +72,7 @@ a, .btn-link {
 :root {
     --blue-primary: #133b63;
 }
+.rz-dialog-wrapper {
+    left: 0;
+    animation: dialog_fade_up forwards 0.4s ease-in-out;
+}
