@@ -21,7 +21,6 @@
     <Folder Include="Models\" />
     <Folder Include="DataAccess\" />
     <Folder Include="Interfaces\" />
-    <Folder Include="Helper\" />
     <Folder Include="Common\" />
     <Folder Include="Repository\" />
   </ItemGroup>
