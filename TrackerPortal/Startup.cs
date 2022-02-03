@@ -10,6 +10,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using TrackerPortal.Helper;
 
 namespace TrackerPortal
 {
@@ -18,6 +19,7 @@ namespace TrackerPortal
         public Startup(IConfiguration configuration)
         {
             Configuration = configuration;
+            AppData.configuration = configuration;
         }
 
         public IConfiguration Configuration { get; }

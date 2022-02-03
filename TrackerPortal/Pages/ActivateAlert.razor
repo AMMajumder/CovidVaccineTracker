@@ -9,7 +9,7 @@
                 <RadzenLabel Text="Email" />
             </div>
             <div class="col">
-                <RadzenTextBox style="display: block" Name="Email" @bind-Value=@EmailInfo.EmailID Class="w-100" />
+                <RadzenTextBox style="display: block" Name="Email" @bind-Value=@EmailInfo.To Class="w-100" />
                 <RadzenRequiredValidator Component="Email" Text="Email is required" />
                 <RadzenEmailValidator Component="Email" Text="Invalid email address" />
             </div>
@@ -17,7 +17,7 @@
         <div class="d-flex align-content-between">
             <RadzenButton class="mr-3" ButtonStyle="ButtonStyle.Secondary" Size="ButtonSize.Small" ButtonType="ButtonType.Submit" Text="PROCEED"></RadzenButton>
             <RadzenButton ButtonStyle="ButtonStyle.Secondary" Size="ButtonSize.Small" Text="CANCEL" Click="CloseEmailDialog"></RadzenButton>
-        </div>        
+        </div>
     </RadzenFieldset>
 </RadzenTemplateForm>
 
@@ -28,11 +28,24 @@
 
     public EmailModel EmailInfo { get; set; } = new EmailModel();
 
+    private string EmailSubject = "CoV Tracker Alert";
+
+    protected override void OnInitialized()
+    {
+        EmailInfo.Subject = EmailSubject;
+    }
+
     protected async Task SaveCustomerForAlert()
     {
         //save user in db
+        EmailInfo.Body = $"<div>Hello {EmailInfo.To.Split('@')[0]},</div>" +
+                            $"<div>You will receive daily alerts regarding vaccine slots availability at {Center.CenterName}</div>" +
+                            $"<h4>Thank you for subscribing to our notification service</h4>" +
+                            $"<br /><br />" +
+                            $"<div>Regards,</div>" +
+                            $"<div>CoV Tracker Team</div>";
 
-        //send a notification mail
+        await RestHelper.SendEmail(EmailInfo);
     }
     protected async Task CloseEmailDialog()
     {

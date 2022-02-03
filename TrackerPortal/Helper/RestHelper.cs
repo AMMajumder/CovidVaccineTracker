@@ -6,6 +6,8 @@ using System.Net.Http;
 using System.Text;
 using System.Threading.Tasks;
 using TrackerPortal.Model;
+using Microsoft.Extensions.Configuration;
+using System.IO;
 
 namespace TrackerPortal.Helper
 {
@@ -115,13 +117,13 @@ namespace TrackerPortal.Helper
             }
             return centersList.AllCenters;
         }
-        public static async Task<bool> SendEmail(Email mailInfo)
+        public static async Task<bool> SendEmail(EmailModel mailInfo)
         {
             HttpClient httpClient = null;
 
             try
             {
-                var requestURL = Environment.GetEnvironmentVariable("Email-api-url");
+                var requestURL = AppData.configuration.GetValue<string>("Email-api-url");
 
                 using (httpClient = new HttpClient())
                 {
