@@ -1,11 +1,58 @@
 ﻿@using TrackerPortal.Model
 @using TrackerPortal.Helper
 
-<h4>@Center.Address</h4>
-<h4>@Center.BlockName</h4>
-<h4>@Center.Fee</h4>
-<h4>@Center.AvailableCapacityDose1</h4>
-<h4>@Center.AvailableCapacityDose2</h4>
+<div class="center-details">
+    <div class="center-details-row">
+        <RadzenCard Style="margin: 1rem; margin-top: 0rem; width: -webkit-fill-available;">
+            <h4>Address</h4>
+            <div>
+                <h6>Address:&nbsp; @Center.Address</h6>
+                <h6>Block:&nbsp; @Center.BlockName</h6>
+                <h6>Pincode&nbsp; @Center.PinCode</h6>
+            </div>
+        </RadzenCard> 
+    </div>    
+    <div class="center-details-row">
+        <RadzenCard Style="margin: 1rem; margin-top: 0rem;">
+            <h4>Available capacity</h4>
+            <div>
+                <h6>Dose 1:&nbsp; @Center.AvailableCapacityDose1</h6>
+                <h6>Dose 2:&nbsp; @Center.AvailableCapacityDose2</h6>
+            </div>
+        </RadzenCard>
+        <RadzenCard Style="margin: 1rem; margin-top: 0rem;">
+            <h4>Slot Information</h4>
+            <div>
+                <h6>SLOTS:</h6>
+                @foreach (var item in Center.Slots)
+                {
+                    <h6>@item</h6>
+                }
+            </div>
+        </RadzenCard>
+        <RadzenCard Style="margin: 1rem; margin-top: 0rem;">
+            <h4>Fees Information</h4>
+            <div>
+                <h6>Fees Type:&nbsp; @Center.FeeType</h6>
+                <h6>Fee:&nbsp; @Center.Fee</h6>
+            </div>
+        </RadzenCard>
+        <RadzenCard Style="margin: 1rem; margin-top: 0rem;">
+            <h4>Age Information</h4>
+            <div>
+                <h6>Min. Age:&nbsp; @Center.MinAgeLimit</h6>
+                @if (string.IsNullOrEmpty(Center.MaxAgeLimit))
+                {
+                    <h6>Max. Age: -</h6>
+                }
+                else
+                {
+                    <h6>Max. Age:&nbsp; @Center.MaxAgeLimit</h6>
+                }
+            </div>
+        </RadzenCard>
+    </div>
+</div>
 
 @code {
 
