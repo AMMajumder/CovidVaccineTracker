@@ -13,14 +13,6 @@ a, .btn-link {
     border-bottom: 1.5px solid var(--blue-primary);
     margin: 0.5rem;
 }
-
-.rz-button.btn-secondary {
-    background-color: #6c8593;
-    color: #ffffff;
-    margin-top: 1rem;
-}
-
-
     .rz-calendar .rz-inputtext {
         border: none;
         border-bottom: 1.5px solid var(--blue-primary) !important;
@@ -57,4 +49,13 @@ a, .btn-link {
 }
 .search-header h2 {
     color: #404e66;
+}
+.rz-button.btn-secondary{
+    color:black;
+}
+.btn-secondary, .btn-secondary:hover, .btn-secondary:focus {
+    border: 1px solid var(--blue-primary);
+    background-color: var(--color-white) !important;
+    box-shadow: none !important;
+    margin-top: 1rem;
 }

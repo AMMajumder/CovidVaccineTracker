@@ -90,6 +90,7 @@ a, .btn-link {
 }
 :root {
     --blue-primary: #133b63;
+    --color-white: #fff;
 }
 .rz-dialog-wrapper {
     left: 0;

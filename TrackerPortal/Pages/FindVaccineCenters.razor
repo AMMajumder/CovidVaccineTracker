@@ -108,7 +108,9 @@
     }
     public async Task GetAlerts(Centers center)
     {
-        //take user's email id
+        await DialogBox.OpenAsync<ActivateAlert>("Get Alerts",
+                       new Dictionary<string, object>() { { "Center", center } },
+                       new DialogOptions() { Width = "auto", Height = "auto", ShowTitle = false, ShowClose = false });
     }
 }
 
