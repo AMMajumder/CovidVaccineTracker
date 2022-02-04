@@ -1,0 +1,21 @@
+﻿@using TrackerPortal.Model
+@inject DialogService DialogBox
+
+<RadzenIcon Icon="check_circle" class="text-success bg-transparent" Style="font-size: 4rem;" />
+
+<h4 class="mb-2 font-weight-bold text-blue">@Message</h4>
+<p>@Details</p>
+
+<RadzenButton ButtonStyle="ButtonStyle.Secondary" class="w-100" Text="CLOSE" Click="OkClicked"></RadzenButton>
+
+@code {
+    [Parameter]
+    public string Message { get; set; }
+    [Parameter]
+    public string Details { get; set; }
+
+    protected void OkClicked()
+    {
+        DialogBox.Close(true);
+    }
+}
