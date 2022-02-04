@@ -1,6 +1,7 @@
 ﻿using Microsoft.Azure.Cosmos;
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using VaccineTrackerServer.Interfaces;
@@ -26,6 +27,11 @@ namespace VaccineTrackerServer.DataAccess
         {
             var result = await Container.CreateItemAsync<SubscriberInfoModel>(subscriber,new PartitionKey(subscriber.SubscriberID));
             return result.Resource;
+        }
+        public async Task<List<SubscriberInfoModel>> GetActiveSubsriptions()
+        {
+            var result = Container.GetItemLinqQueryable<SubscriberInfoModel>(true).Where(x => x.IsAlertEnabled == true).AsEnumerable().ToList();
+            return result;
         }
     }
 }
