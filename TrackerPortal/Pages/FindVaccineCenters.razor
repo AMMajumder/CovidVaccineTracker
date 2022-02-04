@@ -55,7 +55,7 @@
     }
     public async Task PopulateDistricts()
     {
-
+        DistrictsList = await RestHelper.PopulateDistricts(SelectedState.StateID);
     }
     public async Task FetchCenters()
     {
