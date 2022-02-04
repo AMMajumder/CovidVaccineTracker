@@ -1,9 +1,10 @@
 ﻿using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
-using System.Text;
+using System.Linq;
+using System.Threading.Tasks;
 
-namespace VaccineTrackerServer.Models
+namespace TrackerPortal.Model
 {
     public class SubscriberInfoModel
     {

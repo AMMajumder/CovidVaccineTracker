@@ -16,10 +16,10 @@
 
                     <div class="dropdown-wrapper">
                         <div class="flex">
-                            <RadzenDropDown Placeholder="Select State" AllowClear="true" AllowFiltering="true" FilterCaseSensitivity="FilterCaseSensitivity.CaseInsensitive" Data=@StatesList TextProperty="StateName" ValueProperty="StateID" @bind-Value="SelectedState.StateID" Change="PopulateDistricts" />
+                            <RadzenDropDown Placeholder="Select State" AllowClear="false" AllowFiltering="true" FilterCaseSensitivity="FilterCaseSensitivity.CaseInsensitive" Data=@StatesList TextProperty="StateName" ValueProperty="StateID" @bind-Value="SelectedState.StateID" Change="PopulateDistricts" />
                         </div>
                         <div>
-                            <RadzenDropDown Placeholder="Select District" AllowClear="true" AllowFiltering="true" FilterCaseSensitivity="FilterCaseSensitivity.CaseInsensitive" Data=@DistrictsList TextProperty="DistrictName" ValueProperty="DistrictID" @bind-Value="SelectedDistrict.DistrictID" />
+                            <RadzenDropDown Placeholder="Select District" AllowClear="false" AllowFiltering="true" FilterCaseSensitivity="FilterCaseSensitivity.CaseInsensitive" Data=@DistrictsList TextProperty="DistrictName" ValueProperty="DistrictID" @bind-Value="SelectedDistrict.DistrictID" />
                         </div>
                     </div>
                     <RadzenDatePicker Placeholder="Choose Appointment Date" TValue="DateTime" @bind-Value="SelectedDate" Style="width:100%" DateFormat="dd-MM-yyyy" />
@@ -102,7 +102,7 @@
     }
     public async Task OpenDetailsScreen(Centers center)
     {
-        await DialogBox.OpenAsync<CenterDetails>("Details",
+        await DialogBox.OpenAsync<CenterDetails>($"{center.CenterName}"+" - "+$"{center.Vaccine}",
                        new Dictionary<string, object>() { { "Center", center } },
                        new DialogOptions() { Width = "auto", Height = "auto", ShowTitle = true, ShowClose = true });
     }

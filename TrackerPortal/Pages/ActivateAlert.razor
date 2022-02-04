@@ -15,8 +15,8 @@
             </div>
         </div>
         <div class="d-flex align-content-between">
-            <RadzenButton class="mr-3" ButtonStyle="ButtonStyle.Secondary" Size="ButtonSize.Small" ButtonType="ButtonType.Submit" Text="PROCEED"></RadzenButton>
-            <RadzenButton ButtonStyle="ButtonStyle.Secondary" Size="ButtonSize.Small" Text="CANCEL" Click="CloseEmailDialog"></RadzenButton>
+            <RadzenButton class="mr-3" ButtonStyle="ButtonStyle.Secondary" Size="ButtonSize.Small" ButtonType="ButtonType.Submit" Text="PROCEED" IsBusy="DisableButtons" BusyText="PROCESSING . . ."></RadzenButton>
+            <RadzenButton ButtonStyle="ButtonStyle.Secondary" Size="ButtonSize.Small" Text="CANCEL" Click="CloseEmailDialog" Disabled="DisableButtons"></RadzenButton>
         </div>
     </RadzenFieldset>
 </RadzenTemplateForm>
@@ -26,9 +26,12 @@
     [Parameter]
     public Centers Center { get; set; }
 
+    public SubscriberInfoModel SubscriptionInfo { get; set; } = new SubscriberInfoModel();
+
     public EmailModel EmailInfo { get; set; } = new EmailModel();
 
     private string EmailSubject = "CoV Tracker Alert";
+    private bool DisableButtons = false;
 
     protected override void OnInitialized()
     {
@@ -37,7 +40,8 @@
 
     protected async Task SaveCustomerForAlert()
     {
-        //save user in db
+        DisableButtons = true;
+
         EmailInfo.Body = $"<div>Hello {EmailInfo.To.Split('@')[0]},</div>" +
                             $"<br />" +
                             $"<div>You will receive daily alerts regarding vaccine slots availability at {Center.CenterName}</div>" +
@@ -46,22 +50,37 @@
                             $"<div>Regards,</div>" +
                             $"<div>CoV Tracker Team</div>";
 
-        var mailSent = await RestHelper.SendEmail(EmailInfo);
-        if (mailSent)
-        {
-            var close = await DialogBox.OpenAsync<Success>("Success",
-                       new Dictionary<string, object>() { { "Message","Email sent"},{"Details",$"You'll receive daily alerts regarding vaccine slots availability at {Center.CenterName}" } },
-                       new DialogOptions() { Width = "auto", Height = "auto", ShowTitle = false, ShowClose = false, Style= "text-align-last:center;"});
+        SubscriptionInfo.SubscriberID = EmailInfo.To;
+        SubscriptionInfo.CenterID = Center.CenterID;
+        SubscriptionInfo.CenterName = Center.CenterName;
+        SubscriptionInfo.IsAlertEnabled = true;
 
-            if (close is bool && close)
+        bool SubscriptionCreated = await RestHelper.SaveSubscription(SubscriptionInfo);
+        if (SubscriptionCreated)
+        {
+            var mailSent = await RestHelper.SendEmail(EmailInfo);
+            if (mailSent)
             {
-                await CloseEmailDialog();
+                var close = await DialogBox.OpenAsync<Success>("Success",
+                           new Dictionary<string, object>() { { "Message", "Email sent" }, { "Details", $"You'll receive daily alerts regarding vaccine slots availability at {Center.CenterName}" } },
+                           new DialogOptions() { Width = "auto", Height = "auto", ShowTitle = false, ShowClose = false, Style = "text-align-last:center;" });
+
+                if (close is bool && close)
+                {
+                    await CloseEmailDialog();
+                }
+            }
+            else
+            {
+                await DialogBox.Confirm("Something went wrong, Please try again later", "Error");
             }
         }
         else
         {
-            await DialogBox.Confirm("Something went wrong, Please try again later","Error");
+            await DialogBox.Confirm("Something went wrong, Please try again later", "Error");
         }
+        DisableButtons = false;
+
     }
     protected async Task CloseEmailDialog()
     {
