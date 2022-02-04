@@ -7,29 +7,46 @@ using Microsoft.Azure.WebJobs.Extensions.Http;
 using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Logging;
 using Newtonsoft.Json;
+using VaccineTrackerServer.Models;
+using System.Net.Http;
+using VaccineTrackerServer.Interfaces;
 
 namespace VaccineTrackerServer.Backend
 {
-    public static class AddSubscriberInfoFunction
+    public class AddSubscriberInfoFunction
     {
-        [FunctionName("AddSubscriberInfoFunction")]
-        public static async Task<IActionResult> Run(
-            [HttpTrigger(AuthorizationLevel.Function, "get", "post", Route = null)] HttpRequest req,
+        public ISubscriberInfoRepository SubscriberInfoRepository { get; set; }
+        public ISubscriberInfoDataAccess SubscriberInfoDataAccess { get; set; }
+        public AddSubscriberInfoFunction(ISubscriberInfoRepository SubscriberInfoRepository, ISubscriberInfoDataAccess SubscriberInfoDataAccess)
+        {
+            this.SubscriberInfoRepository = SubscriberInfoRepository;
+            this.SubscriberInfoDataAccess = SubscriberInfoDataAccess;
+        }
+        [FunctionName("add-subscriber-info-function-post")]
+        public static async Task<HttpResponseMessage> Run(
+            [HttpTrigger(AuthorizationLevel.Function, "get", "post", Route = "AddSubscriberInfoFunction")] HttpRequest req,
             ILogger log)
         {
-            log.LogInformation("C# HTTP trigger function processed a request.");
+            try
+            {
+                log.LogInformation("add-subscriber-info-function-post: Start");
+                string requestBody = await new StreamReader(req.Body).ReadToEndAsync();
+                SubscriberInfoModel info = JsonConvert.DeserializeObject<SubscriberInfoModel>(requestBody);
 
-            string name = req.Query["name"];
 
-            string requestBody = await new StreamReader(req.Body).ReadToEndAsync();
-            dynamic data = JsonConvert.DeserializeObject(requestBody);
-            name = name ?? data?.name;
+                return new HttpResponseMessage(System.Net.HttpStatusCode.OK);
+            }
+            catch (Exception ex)
+            {
+                log.LogInformation($"add-subscriber-info-function-post: failed");
+                log.LogInformation($"Message: {ex.Message}");
+                return new HttpResponseMessage(System.Net.HttpStatusCode.BadRequest);
+            }
+            finally
+            {
+                log.LogInformation("add-subscriber-info-function-post: End");
+            }
 
-            string responseMessage = string.IsNullOrEmpty(name)
-                ? "This HTTP triggered function executed successfully. Pass a name in the query string or in the request body for a personalized response."
-                : $"Hello, {name}. This HTTP triggered function executed successfully.";
-
-            return new OkObjectResult(responseMessage);
         }
     }
 }
