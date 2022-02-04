@@ -13,7 +13,6 @@ namespace VaccineTrackerServer.Business
     public class FindSubscribersAndSendAlertsProcessor
     {
         private readonly string EmailSubject = "CoVTracker Alerts";
-        private readonly string EmailBody = "";
         private readonly string DatabaseName = "CoVTracker";
         private readonly string ConnectionString = "ConnectionString";
         public ISubscriberInfoRepository SubscriberInfoRepository { get; set; }
@@ -31,21 +30,31 @@ namespace VaccineTrackerServer.Business
 
             var activeSubscribers = activeSubscriptions.GroupBy(x => x.SubscriberID).Select(x => x.Key);
 
-            Parallel.ForEach(activeSubscribers, subscriber =>
+            Parallel.ForEach(activeSubscribers, async subscriber =>
             {
+                string EmailBody = $"<div>Dear {subscriber},</div><h4>Please find below vaccine availability information for your subscribed centers</h4>";
                 var subscriptionsCurrentUser = activeSubscriptions.Where(x => x.SubscriberID.Equals(subscriber));
 
-                string EmailReceiver = subscriber;
+                string EmailReceiver = subscriber.Split('@')[0];
                 List<int> subscribedCenters = new List<int>();
                 foreach (var subscription in subscriptionsCurrentUser)
                 {
                     subscribedCenters.Add(subscription.CenterID);
 
-                    //call cowin api for each center and check available slots
-                    //store the available slots in list<int>
+                    var sessions = await RestHelper.PopulateSessions(subscription.CenterID, DateTime.Now);
+
+                    sessions = sessions.Take(5).ToList();
+
+                    EmailBody+=($"<br/><div>Center - {subscription.CenterName}</div><div>Available capacity:</div>").ToString();
+
+                    foreach(var session in sessions)
+                    {
+                        EmailBody+=($"<div>{session.Date}: Vaccine - {session.Vaccine}, Dose 1 - {session.AvailableCapacityDose1}, Dose 2 - {session.AvailableCapacityDose2}, Min. Age - {session.MinAgeLimit}</div>").ToString();
+                    }
+                    EmailBody+=("<br/>").ToString();
+
                 }
-
-
+                EmailBody+=("<br/><br/><div>Regards,</div><div>CoVTracker Team</div>").ToString();
                 SMTPHelper helper = new SMTPHelper();
                 helper.SendMail(null, EmailReceiver, EmailSubject, EmailBody);
 
