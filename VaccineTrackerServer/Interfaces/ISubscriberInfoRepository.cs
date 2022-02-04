@@ -9,6 +9,6 @@ namespace VaccineTrackerServer.Interfaces
     public interface ISubscriberInfoRepository
     {
         public void Init(string ConnectionString, string DatabaseName);
-        public Task AddSubsriberInfo(SubscriberInfoModel subscriber);
+        public Task<SubscriberInfoModel> AddSubsriberInfo(SubscriberInfoModel subscriber);
     }
 }

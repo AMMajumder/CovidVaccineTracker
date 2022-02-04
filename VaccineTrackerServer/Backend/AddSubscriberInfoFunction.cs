@@ -10,11 +10,14 @@ using Newtonsoft.Json;
 using VaccineTrackerServer.Models;
 using System.Net.Http;
 using VaccineTrackerServer.Interfaces;
+using System.Net;
 
 namespace VaccineTrackerServer.Backend
 {
     public class AddSubscriberInfoFunction
     {
+        private readonly string DatabaseName = "CoVTracker";
+        private readonly string ConnectionString = "ConnectionString";
         public ISubscriberInfoRepository SubscriberInfoRepository { get; set; }
         public ISubscriberInfoDataAccess SubscriberInfoDataAccess { get; set; }
         public AddSubscriberInfoFunction(ISubscriberInfoRepository SubscriberInfoRepository, ISubscriberInfoDataAccess SubscriberInfoDataAccess)
@@ -23,7 +26,7 @@ namespace VaccineTrackerServer.Backend
             this.SubscriberInfoDataAccess = SubscriberInfoDataAccess;
         }
         [FunctionName("add-subscriber-info-function-post")]
-        public static async Task<HttpResponseMessage> Run(
+        public async Task<HttpResponseMessage> Run(
             [HttpTrigger(AuthorizationLevel.Function, "get", "post", Route = "AddSubscriberInfoFunction")] HttpRequest req,
             ILogger log)
         {
@@ -33,14 +36,24 @@ namespace VaccineTrackerServer.Backend
                 string requestBody = await new StreamReader(req.Body).ReadToEndAsync();
                 SubscriberInfoModel info = JsonConvert.DeserializeObject<SubscriberInfoModel>(requestBody);
 
+                info.SubscriptionID = System.DateTime.Now.ToString("ddMMyyyyHHmmssfff");
+                info.Identifier = Guid.NewGuid().ToString();
 
-                return new HttpResponseMessage(System.Net.HttpStatusCode.OK);
+                var DBConnectionString = Environment.GetEnvironmentVariable(ConnectionString);
+                SubscriberInfoRepository.Init(DBConnectionString,DatabaseName);
+                var createdResource = await SubscriberInfoRepository.AddSubsriberInfo(info);
+                if (createdResource.SubscriptionID.Equals(info.SubscriptionID))
+                {
+                    return new HttpResponseMessage(HttpStatusCode.Created);
+                }
+
+                return new HttpResponseMessage(HttpStatusCode.BadRequest);
             }
             catch (Exception ex)
             {
                 log.LogInformation($"add-subscriber-info-function-post: failed");
                 log.LogInformation($"Message: {ex.Message}");
-                return new HttpResponseMessage(System.Net.HttpStatusCode.BadRequest);
+                return new HttpResponseMessage(HttpStatusCode.BadRequest);
             }
             finally
             {
