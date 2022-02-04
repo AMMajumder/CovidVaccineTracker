@@ -17,7 +17,6 @@
   </ItemGroup>
   <ItemGroup>
     <Folder Include="Business\" />
-    <Folder Include="DataAccess\" />
     <Folder Include="Common\" />
   </ItemGroup>
 </Project>
