@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using VaccineTrackerServer.Helper;
 using VaccineTrackerServer.Interfaces;
 using VaccineTrackerServer.Models;
 
@@ -11,6 +12,8 @@ namespace VaccineTrackerServer.Business
 {
     public class FindSubscribersAndSendAlertsProcessor
     {
+        private readonly string EmailSubject = "CoVTracker Alerts";
+        private readonly string EmailBody = "";
         private readonly string DatabaseName = "CoVTracker";
         private readonly string ConnectionString = "ConnectionString";
         public ISubscriberInfoRepository SubscriberInfoRepository { get; set; }
@@ -41,8 +44,10 @@ namespace VaccineTrackerServer.Business
                     //call cowin api for each center and check available slots
                     //store the available slots in list<int>
                 }
-                //call email function.
 
+
+                SMTPHelper helper = new SMTPHelper();
+                helper.SendMail(null, EmailReceiver, EmailSubject, EmailBody);
 
             });
 
