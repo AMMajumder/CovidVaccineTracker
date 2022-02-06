@@ -25,9 +25,8 @@ namespace VaccineTrackerServer.Backend
             this.SubscriberInfoDataAccess = SubscriberInfoDataAccess;
         }
         [FunctionName("send-periodical-alerts-to-subscribers-function-post")]
-        public async Task<HttpResponseMessage> Run(
-            [HttpTrigger(AuthorizationLevel.Function, "post", Route = "send-periodical-alerts-to-subscribers-function")] HttpRequest req,
-            ILogger log)
+        public async Task Run(
+        [TimerTrigger("0 28 14 * * *")] TimerInfo myTimer, ILogger log)
         {
             try
             {
@@ -36,14 +35,14 @@ namespace VaccineTrackerServer.Backend
                 FindSubscribersAndSendAlertsProcessor processor = new FindSubscribersAndSendAlertsProcessor(SubscriberInfoRepository, SubscriberInfoDataAccess);
 
                 await processor.Process();
-                return new HttpResponseMessage(HttpStatusCode.OK);
+                //return new HttpResponseMessage(HttpStatusCode.OK);
 
             }
             catch (Exception ex)
             {
                 log.LogInformation($"send-periodical-alerts-to-subscribers-function-post: failed");
                 log.LogInformation($"Message: {ex.Message}");
-                return new HttpResponseMessage(HttpStatusCode.BadRequest);
+                //return new HttpResponseMessage(HttpStatusCode.BadRequest);
             }
             finally
             {
