@@ -29,5 +29,14 @@ namespace VaccineTrackerServer.Repository
             var result = await SubscriberInfoDataAccess.GetActiveSubsriptions(SubscriberID);
             return result;
         }
+        public async Task<bool> UnSubscribeToAlerts(string SubscriptionID)
+        {
+            var result = await SubscriberInfoDataAccess.UnSubscribeToAlerts(SubscriptionID);
+            if (result.SubscriptionID.Equals(SubscriptionID))
+            {
+                return true;
+            }
+            return false;
+        }
     }
 }

@@ -11,5 +11,7 @@ namespace VaccineTrackerServer.Interfaces
         public void Init(string ConnectionString, string DatabaseName);
         public Task<SubscriberInfoModel> AddInfo(SubscriberInfoModel subscriber);
         public Task<List<SubscriberInfoModel>> GetActiveSubsriptions(string SubscriberID=null);
+
+        public Task<SubscriberInfoModel> UnSubscribeToAlerts(string SubscriptionID);
     }
 }
