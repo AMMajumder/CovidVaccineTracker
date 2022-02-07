@@ -13,6 +13,7 @@ namespace TrackerPortal.Helper
         private const string urlBase = "https://cdn-api.co-vin.in/api";
         private const string FetchStatesURL = "/v2/admin/location/states";
         private const string FetchDistrictsURL = "/v2/admin/location/districts/";
+        private const string FetchCentersURL = "/v2/appointment/sessions/public/findByDistrict";
 
         public static async Task<List<States>> PopulateStates()
         {
@@ -79,6 +80,39 @@ namespace TrackerPortal.Helper
                 if (httpClient != null) httpClient = null;
             }
             return districtsList.AllDistricts;
+        }
+        public static async Task<List<Centers>> PopulateCenters(int districtID, DateTime appointmentDate)
+        {
+            HttpClient httpClient = null;
+            var centersList = new CentersModel();
+            string contentString = null;
+
+            try
+            {
+                string chosenAppointmentDate = appointmentDate.ToString("dd-MM-yyyy");
+                var requestURL = $"{urlBase}{FetchCentersURL}?district_id={districtID}&date={chosenAppointmentDate}";
+
+                using (httpClient = new HttpClient())
+                {
+                    HttpResponseMessage result = new HttpResponseMessage();
+
+                    result = await httpClient.GetAsync(requestURL);
+
+                    contentString = await result.Content.ReadAsStringAsync();
+
+                    centersList = JsonConvert.DeserializeObject<CentersModel>(contentString);
+
+                }
+            }
+            catch (Exception ex)
+            {
+                centersList = new CentersModel() { AllCenters = new List<Centers>() };
+            }
+            finally
+            {
+                if (httpClient != null) httpClient = null;
+            }
+            return centersList.AllCenters;
         }
 
     }
