@@ -26,7 +26,7 @@ namespace VaccineTrackerServer.Backend
         }
         [FunctionName("send-periodical-alerts-to-subscribers-function-post")]
         public async Task Run(
-        [TimerTrigger("0 28 14 * * *")] TimerInfo myTimer, ILogger log)
+        [TimerTrigger("0 25 17 * * *")] TimerInfo myTimer, ILogger log)
         {
             try
             {
