@@ -2,7 +2,7 @@
 @using TrackerPortal.Model
 @using TrackerPortal.Helper
 @inject DialogService DialogBox
-<div class="d-flex flex-row justify-content-center align-items-center" style="height:50vh">
+<div class="d-flex flex-row justify-content-center align-items-center" style="height: 45vh; background-color: #e6ecef; margin-bottom:2rem">
     <RadzenTemplateForm TItem="EmailModel" Data=@EmailInfo Submit="SendOTP" Style="width: 60%; background-color: white; outline: auto; outline-color: #575963 ">
         <RadzenFieldset>
             <div class="row mb-3">
@@ -32,14 +32,12 @@
         </RadzenFieldset>
     </RadzenTemplateForm>
 </div>
-<div>
-@foreach(var item in subscriptions)
-{
-    <ul>
-        <li>@item.CenterName</li>
-        <li>@item.CenterID</li>
-    </ul>
-}
+<div class="@DisplaySubsriptions">
+    <div class="mb-1"><b>Your active subscriptions -</b></div>
+    <RadzenListBox Visible="ShowListBox" AllowFiltering="true" FilterCaseSensitivity="FilterCaseSensitivity.CaseInsensitive" @bind-Value=@SubscriptionsToDisable Multiple="true" Data=@subscriptions
+                   TextProperty="CenterName" ValueProperty="SubscriptionID" Style="height:auto" Class="w-100" Change="(args=>CheckSelected(args))" Placeholder="Select centers you want to unsubscribe" />
+
+    <RadzenButton Visible="ShowListBox" class="w-100" ButtonStyle="ButtonStyle.Secondary" Size="ButtonSize.Small" Text="Unsubscribe to Alerts" Click="Unsubscribe"></RadzenButton>
 </div>
 <RadzenDialog></RadzenDialog>
 
@@ -54,13 +52,17 @@
     private string EmailComponentValidation = "Email";
     private string EmailSubject = "Secret Code - CoV Tracker";
     private string SecretCode = "";
+    private bool ShowListBox = false;
+    IEnumerable<string> SubscriptionsToDisable = new string[] { };
+    public string SelectedSubscriptionsToUnsubscribe { get; set; };
+    public string DisplaySubsriptions = "d-none";
 
     protected async Task SendOTP()
     {
         DisableButtons = true;
         await Task.Delay(1);
 
-        SecretCode = new string(System.DateTime.Now.ToString("ddMMyyyyHHmmssfff").Reverse().ToArray()).Substring(0,5);
+        SecretCode = new string(System.DateTime.Now.ToString("ddMMyyyyHHmmssfff").Reverse().ToArray()).Substring(0, 5);
 
         EmailInfo.Subject = EmailSubject;
         EmailInfo.Body = $"<b>Secret Code - {SecretCode}<b><div>Regards,</div><div>CoV Tracker Team</div>";
@@ -82,12 +84,33 @@
         {
             InvalidCodeDisplay = "d-block";
         }
-        else {
+        else
+        {
 
             //fetch subscriber details
             subscriptions = await RestHelper.GetSubscription(EmailInfo.To);
+            DisplaySubsriptions = "d-block";
+            ShowListBox = true;
         }
 
         DisableButtons = false;
+    }
+    protected async Task CheckSelected(object value)
+    {
+        SelectedSubscriptionsToUnsubscribe = string.Join(", ", (IEnumerable<object>)value);
+    }
+    protected async Task Unsubscribe()
+    {
+        if (SelectedSubscriptionsToUnsubscribe != null)
+        {
+            var list = SelectedSubscriptionsToUnsubscribe.Split(',');
+
+            // call unsubscribe api
+        }
+        else
+        {
+            // show message
+        }
+
     }
 }

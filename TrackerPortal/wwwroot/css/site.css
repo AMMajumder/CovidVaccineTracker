@@ -96,3 +96,6 @@ a, .btn-link {
     left: 0;
     animation: dialog_fade_up forwards 0.4s ease-in-out;
 }
+.rz-button.btn-secondary {
+    padding:0
+}
