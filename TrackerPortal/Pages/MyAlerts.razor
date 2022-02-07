@@ -32,12 +32,19 @@
         </RadzenFieldset>
     </RadzenTemplateForm>
 </div>
+<div>
+@foreach(var item in subscriptions)
+{
+    <ul>
+        <li>@item.CenterName</li>
+        <li>@item.CenterID</li>
+    </ul>
+}
+</div>
 <RadzenDialog></RadzenDialog>
 
 @code {
-
-    public SubscriberInfoModel SubscriptionInfo { get; set; } = new SubscriberInfoModel();
-
+    public List<SubscriberInfoModel> subscriptions = new List<SubscriberInfoModel>();
     public EmailModel EmailInfo { get; set; } = new EmailModel();
     private bool DisableButtons = false;
     private bool OTPSent = false;
@@ -69,7 +76,7 @@
         InvalidCodeDisplay = "d-none";
         DisableButtons = true;
         await Task.Delay(1);
-        
+
         //check otp
         if (!EmailInfo.OTP.Equals(SecretCode))
         {
@@ -78,6 +85,7 @@
         else {
 
             //fetch subscriber details
+            subscriptions = await RestHelper.GetSubscription(EmailInfo.To);
         }
 
         DisableButtons = false;

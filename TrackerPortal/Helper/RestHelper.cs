@@ -181,12 +181,14 @@ namespace TrackerPortal.Helper
                 if (httpClient != null) httpClient = null;
             }
         }
-        public static async Task<List<SubscriberInfoModel>> GetSubscription(SubscriberInfoModel model)
+        public static async Task<List<SubscriberInfoModel>> GetSubscription(string subscriberID)
         {
             HttpClient httpClient = null;
             List<SubscriberInfoModel> subscriptions = new List<SubscriberInfoModel>();
+            SubscriberInfoModel model = new SubscriberInfoModel();
             try
             {
+                model.SubscriberID = subscriberID;
                 var requestURL = AppData.configuration.GetValue<string>("Get-subscription-api-url");
 
                 using (httpClient = new HttpClient())
