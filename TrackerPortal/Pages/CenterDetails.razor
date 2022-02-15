@@ -1,0 +1,14 @@
+﻿@using TrackerPortal.Model
+@using TrackerPortal.Helper
+
+<h4>@Center.Address</h4>
+<h4>@Center.BlockName</h4>
+<h4>@Center.Fee</h4>
+<h4>@Center.AvailableCapacityDose1</h4>
+<h4>@Center.AvailableCapacityDose2</h4>
+
+@code {
+
+    [Parameter]
+    public Centers Center { get; set; }
+}

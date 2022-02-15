@@ -2,6 +2,7 @@
 @page "/findvaccinecenters"
 @using TrackerPortal.Model
 @using TrackerPortal.Helper
+@inject DialogService DialogBox
 
 <div class="d-flex flex-column justify-content-around search-center-wrapper" style="height:70vh">
     <div class="align-self-center text-center search-header">
@@ -47,7 +48,7 @@
             <RadzenDataGridColumn Filterable="false" Sortable="true" TItem="Centers" Property="MinAgeLimit" Title="Min. Age">
                 <Template Context="Center">
                     <span>
-                      @(Center.MinAgeLimit != null ? (Center.MinAgeLimit) : "-" )
+                        @(Center.MinAgeLimit != null ? (Center.MinAgeLimit) : "-" )
                     </span>
                 </Template>
             </RadzenDataGridColumn>
@@ -58,6 +59,11 @@
                     </span>
                 </Template>
             </RadzenDataGridColumn>
+            <RadzenDataGridColumn TextAlign="TextAlign.Center" Filterable="false" TItem="Centers" Sortable="false" Title="ACTIONS">
+                <Template Context="rowdata">
+                    <RadzenButton class="btn btn-secondary w-100" Text="Details" Click="()=>OpenDetailsScreen(rowdata)"></RadzenButton>
+                </Template>
+            </RadzenDataGridColumn>
         </Columns>
     </RadzenDataGrid>
 </div>
@@ -66,6 +72,7 @@
     <div class="extra-info">The details displayed here are provided the CoWIN</div>
     <div class="extra-info">We do not modify or change any data</div>
 </div>
+<RadzenDialog></RadzenDialog>
 
 
 @code{
@@ -105,6 +112,12 @@
         CentersCount = CentersList.Count;
         GridDisplay = BlockDisplay;
         Searching = false;
+    }
+    public async Task OpenDetailsScreen(Centers center)
+    {
+        await DialogBox.OpenAsync<CenterDetails>("Details",
+                       new Dictionary<string, object>() { { "Center", center } },
+                       new DialogOptions() { Width = "65vw", Height = "50vh", ShowTitle = true, ShowClose = true });
     }
 }
 
