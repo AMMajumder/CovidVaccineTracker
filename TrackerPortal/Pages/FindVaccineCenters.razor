@@ -8,21 +8,21 @@
         <h1>Find vaccine centers</h1>
         <h2>Get a preview of Covid-19 vaccine centers and check availability</h2>
     </div>
-    <div class="align-self-center" style="width:auto">
+    <div class="align-self-center search-body">
         <RadzenTabs>
             <Tabs>
                 <RadzenTabsItem Text="By District">
 
                     <div class="dropdown-wrapper">
                         <div class="flex">
-                            <RadzenDropDown Placeholder="Select State" AllowFiltering="true" Data=@StatesList TextProperty="StateName" ValueProperty="StateID" @bind-Value="SelectedState.StateID" Change="PopulateDistricts" />
+                            <RadzenDropDown Placeholder="Select State" AllowFiltering="true" FilterCaseSensitivity="FilterCaseSensitivity.CaseInsensitive" Data=@StatesList TextProperty="StateName" ValueProperty="StateID" @bind-Value="SelectedState.StateID" Change="PopulateDistricts" />
                         </div>
                         <div>
-                            <RadzenDropDown Placeholder="Select District" AllowFiltering="true" Data=@DistrictsList TextProperty="DistrictName" ValueProperty="DistrictID" @bind-Value="SelectedDistrict.DistrictID" />
+                            <RadzenDropDown Placeholder="Select District" AllowFiltering="true" FilterCaseSensitivity="FilterCaseSensitivity.CaseInsensitive" Data=@DistrictsList TextProperty="DistrictName" ValueProperty="DistrictID" @bind-Value="SelectedDistrict.DistrictID" />
                         </div>
                     </div>
                     <RadzenDatePicker Placeholder="Choose Appointment Date" TValue="DateTime" @bind-Value="SelectedDate" Style="width:100%" DateFormat="dd-MM-yyyy" />
-                    <RadzenButton ButtonStyle="ButtonStyle.Secondary" Text="Search" Style="width:100%" Click="FetchCenters"></RadzenButton>
+                    <RadzenButton ButtonStyle="ButtonStyle.Secondary" Text="Find Centers" Style="width:100%" Click="FetchCenters" BusyText="Searching . . ." IsBusy="Searching"></RadzenButton>
                 </RadzenTabsItem>
                 <RadzenTabsItem Text="By Pin">
                     <h4>This module is not developed yet.</h4>
@@ -31,28 +31,35 @@
         </RadzenTabs>
     </div>
 </div>
-<div>
-    @foreach (var center in CentersList)
-    {
-        <h6>@center.CenterID</h6>
-        <h6>@center.CenterName</h6>
-        <h6>@center.Address</h6>
-        <h6>@center.BlockName</h6>
-        <h6>@center.PinCode</h6>
-        <h6>@center.AvailableCapacity</h6>
-        <h6>@center.AvailableCapacityDose1</h6>
-        <h6>@center.AvailableCapacityDose2</h6>
-        <h6>@center.FeeType</h6>
-        <h6>@center.Fee</h6>
-        <h6>@center.MinAgeLimit</h6>
-        <h6>@center.MaxAgeLimit</h6>
-        <h4>Slots:</h4>
-        foreach (var slot in center.Slots)
-        {
-            <h6>@slot</h6>
-        }
-        <hr />
-    }
+<hr />
+<div class="@GridDisplay mt-4">
+    <div class="mb-1"><b>Search Results &nbsp;</b><span style="font-size: 0.8rem; color: #6b7987"> (@CentersCount &nbsp; Center(s) found)</span></div>
+    <RadzenDataGrid Data="@CentersList" TItem="@Centers" Count="CentersCount" Style="border: 0px; height:65vh" AllowColumnResize="true"
+                    AllowPaging="true" AllowSorting="true" AllowFiltering="true" FilterMode="FilterMode.Simple" FilterCaseSensitivity="FilterCaseSensitivity.CaseInsensitive" Responsive="true">
+        <EmptyTemplate>
+            <p style="color: lightgrey; font-size: 24px; text-align: center; margin: 1.5rem;">No centers found.</p>
+        </EmptyTemplate>
+        <Columns>
+            <RadzenDataGridColumn Filterable="true" Sortable="true" TItem="Centers" Property="CenterName" Title="Center Name"></RadzenDataGridColumn>
+            <RadzenDataGridColumn Filterable="false" Sortable="true" TItem="Centers" Property="AvailableCapacity" Title="Available"></RadzenDataGridColumn>
+            <RadzenDataGridColumn Filterable="false" Sortable="true" TItem="Centers" Property="Vaccine" Title="Vaccine"></RadzenDataGridColumn>
+            <RadzenDataGridColumn Filterable="false" Sortable="true" TItem="Centers" Property="Fee" Title="Fee"></RadzenDataGridColumn>
+            <RadzenDataGridColumn Filterable="false" Sortable="true" TItem="Centers" Property="MinAgeLimit" Title="Min. Age">
+                <Template Context="Center">
+                    <span>
+                      @(Center.MinAgeLimit != null ? (Center.MinAgeLimit) : "-" )
+                    </span>
+                </Template>
+            </RadzenDataGridColumn>
+            <RadzenDataGridColumn Filterable="false" Sortable="true" TItem="Centers" Property="MaxAgeLimit" Title="Max. Age">
+                <Template Context="Center">
+                    <span>
+                        @(Center.MaxAgeLimit != null ? (Center.MaxAgeLimit) : "-" )
+                    </span>
+                </Template>
+            </RadzenDataGridColumn>
+        </Columns>
+    </RadzenDataGrid>
 </div>
 <div class="mt-4" style="font-size:1rem">
     <b style="color:red">Note:</b>
@@ -74,6 +81,13 @@
 
     public DateTime SelectedDate { get; set; }
 
+    public int CentersCount { get; set; }
+
+    private string GridDisplay = "d-none";
+    private string HideDisplay = "d-none";
+    private string BlockDisplay = "d-block";
+    private bool Searching = false;
+
     protected override async Task OnInitializedAsync()
     {
         StatesList = await RestHelper.PopulateStates();
@@ -84,7 +98,13 @@
     }
     public async Task FetchCenters()
     {
+        Searching = true;
+        GridDisplay = HideDisplay;
+        await Task.Delay(1);
         CentersList = await RestHelper.PopulateCenters(SelectedDistrict.DistrictID, SelectedDate);
+        CentersCount = CentersList.Count;
+        GridDisplay = BlockDisplay;
+        Searching = false;
     }
 }
 
