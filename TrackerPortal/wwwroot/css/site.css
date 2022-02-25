@@ -57,6 +57,16 @@ a, .btn-link {
     .search-body {
         width: auto;
     }
+    .center-details {
+        display: flex;
+        flex-direction: column;
+        justify-content: space-around;
+    }
+    .center-details-row {
+        display: flex;
+        flex-direction: column;
+        justify-content: space-around;
+    }
 }
 @media (min-width: 768px) {
     .dropdown-wrapper {
@@ -67,7 +77,16 @@ a, .btn-link {
     .search-body {
         width:fit-content;
     }
-
+    .center-details {
+        display: flex;
+        flex-direction: column;
+        justify-content: space-around;
+    }
+    .center-details-row {
+        display: flex;
+        flex-direction: row;
+        justify-content: space-around;
+    }
 }
 :root {
     --blue-primary: #133b63;
