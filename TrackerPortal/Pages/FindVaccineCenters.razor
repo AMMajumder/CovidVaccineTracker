@@ -44,24 +44,11 @@
             <RadzenDataGridColumn Filterable="true" Sortable="true" TItem="Centers" Property="CenterName" Title="Center Name"></RadzenDataGridColumn>
             <RadzenDataGridColumn Filterable="false" Sortable="true" TItem="Centers" Property="AvailableCapacity" Title="Available"></RadzenDataGridColumn>
             <RadzenDataGridColumn Filterable="false" Sortable="true" TItem="Centers" Property="Vaccine" Title="Vaccine"></RadzenDataGridColumn>
-            <RadzenDataGridColumn Filterable="false" Sortable="true" TItem="Centers" Property="Fee" Title="Fee"></RadzenDataGridColumn>
-            <RadzenDataGridColumn Filterable="false" Sortable="true" TItem="Centers" Property="MinAgeLimit" Title="Min. Age">
-                <Template Context="Center">
-                    <span>
-                        @(Center.MinAgeLimit != null ? (Center.MinAgeLimit) : "-" )
-                    </span>
-                </Template>
-            </RadzenDataGridColumn>
-            <RadzenDataGridColumn Filterable="false" Sortable="true" TItem="Centers" Property="MaxAgeLimit" Title="Max. Age">
-                <Template Context="Center">
-                    <span>
-                        @(Center.MaxAgeLimit != null ? (Center.MaxAgeLimit) : "-" )
-                    </span>
-                </Template>
-            </RadzenDataGridColumn>
-            <RadzenDataGridColumn TextAlign="TextAlign.Center" Filterable="false" TItem="Centers" Sortable="false" Title="ACTIONS">
+            <RadzenDataGridColumn Filterable="false" Sortable="true" TItem="Centers" Property="FeeType" Title="Fee Type"></RadzenDataGridColumn>
+            <RadzenDataGridColumn Width="35%" TextAlign="TextAlign.Center" Filterable="false" TItem="Centers" Sortable="false" Title="ACTIONS">
                 <Template Context="rowdata">
-                    <RadzenButton class="btn btn-secondary w-100" Text="Details" Click="()=>OpenDetailsScreen(rowdata)"></RadzenButton>
+                    <RadzenButton ButtonStyle="ButtonStyle.Light" Style="font-size:1rem;" Text="View Details" Click="()=>OpenDetailsScreen(rowdata)"></RadzenButton>
+                    <RadzenButton ButtonStyle="ButtonStyle.Primary" Style="font-size: 1rem;" Text="Get Alerts" Click="()=>GetAlerts(rowdata)"></RadzenButton>
                 </Template>
             </RadzenDataGridColumn>
         </Columns>
@@ -117,7 +104,13 @@
     {
         await DialogBox.OpenAsync<CenterDetails>("Details",
                        new Dictionary<string, object>() { { "Center", center } },
-                       new DialogOptions() { Width = "65vw", Height = "50vh", ShowTitle = true, ShowClose = true });
+                       new DialogOptions() { Width = "auto", Height = "auto", ShowTitle = true, ShowClose = true });
+    }
+    public async Task GetAlerts(Centers center)
+    {
+        await DialogBox.OpenAsync<ActivateAlert>("Get Alerts",
+                       new Dictionary<string, object>() { { "Center", center } },
+                       new DialogOptions() { Width = "auto", Height = "auto", ShowTitle = false, ShowClose = false });
     }
 }
 

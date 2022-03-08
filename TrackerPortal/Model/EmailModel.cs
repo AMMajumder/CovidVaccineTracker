@@ -5,7 +5,8 @@ using System.Threading.Tasks;
 
 namespace TrackerPortal.Model
 {
-    public class DisplayInfoModel
+    public class EmailModel
     {
+        public string EmailID { get; set; }
     }
 }
