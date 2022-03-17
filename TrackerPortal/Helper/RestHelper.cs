@@ -3,6 +3,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Net.Http;
+using System.Text;
 using System.Threading.Tasks;
 using TrackerPortal.Model;
 
@@ -113,6 +114,38 @@ namespace TrackerPortal.Helper
                 if (httpClient != null) httpClient = null;
             }
             return centersList.AllCenters;
+        }
+        public static async Task<bool> SendEmail(Email mailInfo)
+        {
+            HttpClient httpClient = null;
+
+            try
+            {
+                var requestURL = Environment.GetEnvironmentVariable("Email-api-url");
+
+                using (httpClient = new HttpClient())
+                {
+                    var content = new StringContent(JsonConvert.SerializeObject(mailInfo), Encoding.UTF8, "application/json");
+
+                    HttpResponseMessage result = new HttpResponseMessage();
+
+                    result = await httpClient.PostAsync(requestURL, content);
+
+                    if (result.IsSuccessStatusCode)
+                    {
+                        return true;
+                    }
+                    return false;
+                }
+            }
+            catch (Exception ex)
+            {
+                return false;
+            }
+            finally
+            {
+                if (httpClient != null) httpClient = null;
+            }
         }
 
     }
