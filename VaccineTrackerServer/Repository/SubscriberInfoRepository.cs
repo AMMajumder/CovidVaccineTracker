@@ -19,9 +19,10 @@ namespace VaccineTrackerServer.Repository
         {
             SubscriberInfoDataAccess.Init(ConnectionString,DatabaseName);
         }
-        public Task AddSubsriberInfo(SubscriberInfoModel subscriber)
+        public async Task<SubscriberInfoModel> AddSubsriberInfo(SubscriberInfoModel subscriber)
         {
-            throw new NotImplementedException();
+            var result = await SubscriberInfoDataAccess.AddInfo(subscriber);
+            return result;
         }
     }
 }
