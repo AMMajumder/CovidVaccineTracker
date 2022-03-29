@@ -149,6 +149,38 @@ namespace TrackerPortal.Helper
                 if (httpClient != null) httpClient = null;
             }
         }
+        public static async Task<bool> SaveSubscription(SubscriberInfoModel model)
+        {
+            HttpClient httpClient = null;
+
+            try
+            {
+                var requestURL = AppData.configuration.GetValue<string>("Save-subscription-api-url");
+
+                using (httpClient = new HttpClient())
+                {
+                    var content = new StringContent(JsonConvert.SerializeObject(model), Encoding.UTF8, "application/json");
+
+                    HttpResponseMessage result = new HttpResponseMessage();
+
+                    result = await httpClient.PostAsync(requestURL, content);
+
+                    if (result.IsSuccessStatusCode)
+                    {
+                        return true;
+                    }
+                    return false;
+                }
+            }
+            catch (Exception ex)
+            {
+                return false;
+            }
+            finally
+            {
+                if (httpClient != null) httpClient = null;
+            }
+        }
 
     }
 }
