@@ -27,7 +27,7 @@ namespace VaccineTrackerServer.Backend
         }
         [FunctionName("add-subscriber-info-function-post")]
         public async Task<HttpResponseMessage> Run(
-            [HttpTrigger(AuthorizationLevel.Function, "get", "post", Route = "AddSubscriberInfoFunction")] HttpRequest req,
+            [HttpTrigger(AuthorizationLevel.Function, "post", Route = "AddSubscriberInfoFunction")] HttpRequest req,
             ILogger log)
         {
             try
