@@ -17,20 +17,22 @@
             </div>
             <div class="row mb-3 @ViewOTPField ">
                 <div class="col-md-4" style="align-self: center;">
-                    <RadzenLabel Text="Enter OTP" />
+                    <RadzenLabel Text="Enter secret code" />
                 </div>
                 <div class="col">
                     <RadzenTextBox style="display: block" Name="Otp" @bind-Value=@EmailInfo.OTP Class="w-100" />
-                    <RadzenRequiredValidator Component="@OTPComponentValidation" Text="Please enter OTP sent to your email" />
+                    <RadzenRequiredValidator Component="@OTPComponentValidation" Text="Please enter the secret code sent to your email" />
+                    <div class="@InvalidCodeDisplay" style="color:red;font-size:0.8rem">Invalid code, Please check your inbox and try again</div>
                 </div>
             </div>
             <div class="d-flex align-content-between">
-                <RadzenButton Visible="!OTPSent" class="w-100" ButtonStyle="ButtonStyle.Secondary" Size="ButtonSize.Small" ButtonType="ButtonType.Submit" Text="Send OTP" IsBusy="DisableButtons" BusyText="Sending OTP . . ."></RadzenButton>
+                <RadzenButton Visible="!OTPSent" class="w-100" ButtonStyle="ButtonStyle.Secondary" Size="ButtonSize.Small" ButtonType="ButtonType.Submit" Text="Send secret code" IsBusy="DisableButtons" BusyText="Sending code . . ."></RadzenButton>
                 <RadzenButton Visible="OTPSent" class="w-100" ButtonStyle="ButtonStyle.Secondary" Size="ButtonSize.Small" Text="Proceed" IsBusy="DisableButtons" BusyText="Fetching your details . . ." Click="CheckOTPAndProcess"></RadzenButton>
             </div>
         </RadzenFieldset>
     </RadzenTemplateForm>
 </div>
+<RadzenDialog></RadzenDialog>
 
 @code {
 
@@ -40,14 +42,23 @@
     private bool DisableButtons = false;
     private bool OTPSent = false;
     private string ViewOTPField = "d-none";
+    private string InvalidCodeDisplay = "d-none";
     private string OTPComponentValidation = "Email";
     private string EmailComponentValidation = "Email";
+    private string EmailSubject = "Secret Code - CoV Tracker";
+    private string SecretCode = "";
 
     protected async Task SendOTP()
     {
         DisableButtons = true;
         await Task.Delay(1);
-        // send otp
+
+        SecretCode = new string(System.DateTime.Now.ToString("ddMMyyyyHHmmssfff").Reverse().ToArray()).Substring(0,5);
+
+        EmailInfo.Subject = EmailSubject;
+        EmailInfo.Body = $"<b>Secret Code - {SecretCode}<b><div>Regards,</div><div>CoV Tracker Team</div>";
+        var result = await RestHelper.SendEmail(EmailInfo);
+
         OTPSent = true;
         ViewOTPField = "";
         DisableButtons = false;
@@ -55,10 +66,20 @@
     }
     protected async Task CheckOTPAndProcess()
     {
+        InvalidCodeDisplay = "d-none";
         DisableButtons = true;
         await Task.Delay(1);
+        
         //check otp
-        //fetch subscriber details
+        if (!EmailInfo.OTP.Equals(SecretCode))
+        {
+            InvalidCodeDisplay = "d-block";
+        }
+        else {
+
+            //fetch subscriber details
+        }
+
         DisableButtons = false;
     }
 }
