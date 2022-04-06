@@ -1,0 +1,64 @@
+﻿@page "/myalerts"
+@using TrackerPortal.Model
+@using TrackerPortal.Helper
+@inject DialogService DialogBox
+<div class="d-flex flex-row justify-content-center align-items-center" style="height:50vh">
+    <RadzenTemplateForm TItem="EmailModel" Data=@EmailInfo Submit="SendOTP" Style="width: 60%; background-color: white; outline: auto; outline-color: #575963 ">
+        <RadzenFieldset>
+            <div class="row mb-3">
+                <div class="col-md-4" style="align-self: center;">
+                    <RadzenLabel Text="Enter your Email" />
+                </div>
+                <div class="col">
+                    <RadzenTextBox Disabled="OTPSent" style="display: block" Name="Email" @bind-Value=@EmailInfo.To Class="w-100" />
+                    <RadzenRequiredValidator Component="@EmailComponentValidation" Text="Email is required" />
+                    <RadzenEmailValidator Component="@EmailComponentValidation" Text="Invalid email address" />
+                </div>
+            </div>
+            <div class="row mb-3 @ViewOTPField ">
+                <div class="col-md-4" style="align-self: center;">
+                    <RadzenLabel Text="Enter OTP" />
+                </div>
+                <div class="col">
+                    <RadzenTextBox style="display: block" Name="Otp" @bind-Value=@EmailInfo.OTP Class="w-100" />
+                    <RadzenRequiredValidator Component="@OTPComponentValidation" Text="Please enter OTP sent to your email" />
+                </div>
+            </div>
+            <div class="d-flex align-content-between">
+                <RadzenButton Visible="!OTPSent" class="w-100" ButtonStyle="ButtonStyle.Secondary" Size="ButtonSize.Small" ButtonType="ButtonType.Submit" Text="Send OTP" IsBusy="DisableButtons" BusyText="Sending OTP . . ."></RadzenButton>
+                <RadzenButton Visible="OTPSent" class="w-100" ButtonStyle="ButtonStyle.Secondary" Size="ButtonSize.Small" Text="Proceed" IsBusy="DisableButtons" BusyText="Fetching your details . . ." Click="CheckOTPAndProcess"></RadzenButton>
+            </div>
+        </RadzenFieldset>
+    </RadzenTemplateForm>
+</div>
+
+@code {
+
+    public SubscriberInfoModel SubscriptionInfo { get; set; } = new SubscriberInfoModel();
+
+    public EmailModel EmailInfo { get; set; } = new EmailModel();
+    private bool DisableButtons = false;
+    private bool OTPSent = false;
+    private string ViewOTPField = "d-none";
+    private string OTPComponentValidation = "Email";
+    private string EmailComponentValidation = "Email";
+
+    protected async Task SendOTP()
+    {
+        DisableButtons = true;
+        await Task.Delay(1);
+        // send otp
+        OTPSent = true;
+        ViewOTPField = "";
+        DisableButtons = false;
+        OTPComponentValidation = "Otp";
+    }
+    protected async Task CheckOTPAndProcess()
+    {
+        DisableButtons = true;
+        await Task.Delay(1);
+        //check otp
+        //fetch subscriber details
+        DisableButtons = false;
+    }
+}
