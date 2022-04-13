@@ -28,9 +28,17 @@ namespace VaccineTrackerServer.DataAccess
             var result = await Container.CreateItemAsync<SubscriberInfoModel>(subscriber,new PartitionKey(subscriber.SubscriberID));
             return result.Resource;
         }
-        public async Task<List<SubscriberInfoModel>> GetActiveSubsriptions()
+        public async Task<List<SubscriberInfoModel>> GetActiveSubsriptions(string SubscriberID=null)
         {
-            var result = Container.GetItemLinqQueryable<SubscriberInfoModel>(true).Where(x => x.IsAlertEnabled == true).AsEnumerable().ToList();
+            List<SubscriberInfoModel> result;
+            if(!string.IsNullOrEmpty(SubscriberID))
+            {
+                result = Container.GetItemLinqQueryable<SubscriberInfoModel>(true).Where(x => x.SubscriberID == SubscriberID).Where(x => x.IsAlertEnabled == true).AsEnumerable().ToList();
+            }
+            else
+            {
+                result = Container.GetItemLinqQueryable<SubscriberInfoModel>(true).Where(x => x.IsAlertEnabled == true).AsEnumerable().ToList();
+            }
             return result;
         }
     }

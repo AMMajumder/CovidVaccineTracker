@@ -24,9 +24,9 @@ namespace VaccineTrackerServer.Repository
             var result = await SubscriberInfoDataAccess.AddInfo(subscriber);
             return result;
         }
-        public async Task<List<SubscriberInfoModel>> GetActiveSubsriptions()
+        public async Task<List<SubscriberInfoModel>> GetActiveSubsriptions(string SubscriberID=null)
         {
-            var result = await SubscriberInfoDataAccess.GetActiveSubsriptions();
+            var result = await SubscriberInfoDataAccess.GetActiveSubsriptions(SubscriberID);
             return result;
         }
     }
