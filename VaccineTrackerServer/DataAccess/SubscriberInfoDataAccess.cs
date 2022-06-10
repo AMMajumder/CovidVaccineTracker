@@ -41,5 +41,11 @@ namespace VaccineTrackerServer.DataAccess
             }
             return result;
         }
+        public async Task<SubscriberInfoModel> UnSubscribeToAlerts(string SubscriptionID)
+        {
+            var item = Container.GetItemLinqQueryable<SubscriberInfoModel>(true).Single(x => x.SubscriptionID == SubscriptionID);
+            var result = await Container.DeleteItemAsync<SubscriberInfoModel>(item.Identifier, new PartitionKey(item.SubscriberID));
+            return result;
+        }
     }
 }
